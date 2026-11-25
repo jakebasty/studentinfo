@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudInfo - Student Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .slide {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+    }
+    .slide.active {
+      display: block;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="bg-[#e5e7eb] min-h-screen flex flex-col items-center justify-start p-4 md:py-8 select-none">
+
+  <!-- Dev & Presentation Switcher Toolbar -->
+  <header class="w-full max-w-[420px] mb-4 bg-white/90 backdrop-blur rounded-2xl p-2.5 shadow-sm border border-neutral-200">
+    <div class="flex items-center justify-between text-xs font-medium text-neutral-500 mb-2 px-1">
+      <span class="flex items-center gap-1.5 font-semibold text-neutral-900">
+        <svg class="w-4 h-4 text-neutral-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        StudInfo Prototype
+      </span>
+      <span id="currentScreenLabel" class="text-neutral-400">Screen 1 of 4</span>
+    </div>
+    <div class="grid grid-cols-4 gap-1.5 text-xs font-semibold">
+      <button onclick="showSlide('login')" id="btn-login" class="py-1.5 px-2 rounded-lg bg-neutral-900 text-white transition-all text-center">Login</button>
+      <button onclick="showSlide('signup')" id="btn-signup" class="py-1.5 px-2 rounded-lg bg-neutral-100 text-neutral-700 hover:bg-neutral-200 transition-all text-center">Sign Up</button>
+      <button onclick="showSlide('profile')" id="btn-profile" class="py-1.5 px-2 rounded-lg bg-neutral-100 text-neutral-700 hover:bg-neutral-200 transition-all text-center">Profile</button>
+      <button onclick="showSlide('edit')" id="btn-edit" class="py-1.5 px-2 rounded-lg bg-neutral-100 text-neutral-700 hover:bg-neutral-200 transition-all text-center">Edit</button>
+    </div>
+  </header>
+
+  <!-- Mobile Frame Container (390px default mobile screen) -->
+  <main class="w-full max-w-[420px] bg-[#f9f9fb] min-h-[844px] rounded-[36px] shadow-2xl border-4 border-neutral-900 overflow-hidden relative flex flex-col justify-between">
+    
+    <!-- SLIDE 1: LOGIN SCREEN -->
+    <section id="slide-login" class="slide active p-8 flex-1 flex flex-col justify-between">
+      <div>
+        <!-- Brand Header -->
+        <div class="flex items-center gap-2 mb-2 pt-6">
+          <div class="w-10 h-10 rounded-xl bg-black flex items-center justify-center text-white">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z"/>
+            </svg>
+          </div>
+          <h1 class="text-2xl font-bold text-neutral-900 tracking-tight">StudInfo</h1>
+        </div>
+        <p class="text-neutral-500 text-sm mb-10">Welcome back. Let's get you signed in.</p>
+
+        <!-- Form Fields -->
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
+          <div>
+            <label class="block text-xs font-semibold text-neutral-800 mb-2">Email Address</label>
+            <input 
+              type="email" 
+              id="loginEmail"
+              required 
+              value="student@university.edu" 
+              placeholder="student@university.edu" 
+              class="w-full px-4 py-3.5 bg-white border border-neutral-200 rounded-2xl text-sm text-neutral-800 focus:outline-none focus:border-neutral-900 transition-colors"
+            >
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label class="text-xs font-semibold text-neutral-800">Password</label>
+              <a href="#" class="text-xs text-neutral-500 hover:text-neutral-900">Forgot?</a>
+            </div>
+            <div class="relative">
+              <input 
+                type="password" 
+                id="loginPassword"
+                required 
+                value="password123"
+                placeholder="Enter your password" 
+                class="w-full px-4 py-3.5 bg-white border border-neutral-200 rounded-2xl text-sm text-neutral-800 focus:outline-none focus:border-neutral-900 transition-colors"
+              >
+              <button type="button" onclick="togglePasswordVisibility('loginPassword')" class="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button 
+            type="submit" 
+            class="w-full py-4 mt-4 bg-neutral-950 text-white font-semibold rounded-2xl shadow-sm hover:bg-neutral-800 active:scale-[0.99] transition-all text-sm"
+          >
+            Log In
+          </button>
+        </form>
+      </div>
+
+      <!-- Footer switch -->
+      <div class="text-center py-6">
+        <p class="text-xs text-neutral-500">
+          Don't have an account? 
+          <button type="button" onclick="showSlide('signup')" class="font-semibold text-neutral-900 ml-1 hover:underline">Sign Up</button>
+        </p>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: SIGN UP SCREEN -->
+    <section id="slide-signup" class="slide p-6 flex-1 flex flex-col justify-between overflow-y-auto">
+      <div>
+        <!-- Top bar badge -->
+        <div class="flex items-center justify-between mb-4 pt-2">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-neutral-200/60 rounded-full text-[11px] font-semibold text-neutral-700">
+            <svg class="w-3.5 h-3.5 text-neutral-800" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z"/>
+            </svg>
+            STUDINFO
+          </div>
+          <span class="text-xs text-neutral-400 font-medium">Student Portal</span>
+        </div>
+
+        <h1 class="text-2xl font-bold text-neutral-900 tracking-tight">Create Account</h1>
+        <p class="text-neutral-500 text-xs mt-1 mb-6">Set up your academic profile in just a few moments.</p>
+
+        <!-- Form Fields -->
+        <form id="signupForm" onsubmit="handleSignup(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-neutral-800 mb-1.5">First Name</label>
+            <input 
+              type="text" 
+              id="signupFirstName"
+              required 
+              placeholder="e.g. Maya" 
+              class="w-full px-4 py-3 bg-white border border-neutral-200 rounded-2xl text-sm text-neutral-800 focus:outline-none focus:border-neutral-900"
+            >
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-1.5">
+              <label class="text-xs font-semibold text-neutral-800">Middle Name</label>
+              <span class="text-[11px] text-neutral-400">Optional</span>
+            </div>
+            <input 
+              type="text" 
+              id="signupMiddleName"
+              placeholder="e.g. Lin" 
+              class="w-full px-4 py-3 bg-white border border-neutral-200 rounded-2xl text-sm text-neutral-800 focus:outline-none focus:border-neutral-900"
+            >
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-neutral-800 mb-1.5">Last Name</label>
+            <input 
+              type="text" 
+              id="signupLastName"
+              required 
+              placeholder="e.g. Chen" 
+              class="w-full px-4 py-3 bg-white border border-neutral-200 rounded-2xl text-sm text-neutral-800 focus:outline-none focus:border-neutral-900"
+            >
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-neutral-800 mb-1.5">Email Address</label>
+            <input 
+              type="email" 
+              id="signupEmail"
+              required 
+              placeholder="maya.chen@university.edu" 
+              class="w-full px-4 py-3 bg-white border border-neutral-200 rounded-2xl text-sm text-neutral-800 focus:outline-none focus:border-neutral-900"
+            >
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-neutral-800 mb-1.5">Mobile Number</label>
+            <input 
+              type="tel" 
+              id="signupMobile"
+              required 
+              placeholder="+1 (555) 234-5678" 
+              class="w-full px-4 py-3 bg-white border border-neutral-200 rounded-2xl text-sm text-neutral-800 focus:outline-none focus:border-neutral-900"
+            >
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-neutral-800 mb-1.5">Password</label>
+            <div class="relative">
+              <input 
+                type="password" 
+                id="signupPassword"
+                required 
+                placeholder="Create a strong password" 
+                class="w-full px-4 py-3 bg-white border border-neutral-200 rounded-2xl text-sm text-neutral-800 focus:outline-none focus:border-neutral-900"
+              >
+              <button type="button" onclick="togglePasswordVisibility('signupPassword')" class="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button 
+            type="submit" 
+            class="w-full py-4 mt-2 bg-neutral-950 text-white font-semibold rounded-2xl shadow-sm hover:bg-neutral-800 flex items-center justify-center gap-2 transition-all text-sm"
+          >
+            <span>Register</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </button>
+        </form>
+      </div>
+
+      <div class="text-center py-5">
+        <button type="button" onclick="showSlide('login')" class="text-xs text-neutral-600 font-medium hover:text-neutral-900">
+          Back to Login
+        </button>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: STUDENT PROFILE SCREEN -->
+    <section id="slide-profile" class="slide p-6 flex-1 flex flex-col justify-between">
+      <div>
+        <!-- Top App Bar Navigation -->
+        <div class="flex items-center justify-between pt-2 pb-4">
+          <button onclick="showSlide('login')" class="p-2 -ml-2 rounded-full hover:bg-neutral-200 transition-colors">
+            <svg class="w-5 h-5 text-neutral-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h2 class="text-base font-bold text-neutral-900">My Profile</h2>
+          <div class="w-8 h-8 rounded-full bg-neutral-900 text-white flex items-center justify-center">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Student Card -->
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-neutral-100 mt-2">
+          <!-- Profile Avatar + Identity Header -->
+          <div class="flex items-center gap-4 mb-6">
+            <div class="flex flex-col items-center">
+              <div class="w-16 h-16 rounded-full bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-400">
+                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+              </div>
+              <button onclick="showSlide('edit')" class="inline-flex items-center gap-1 text-[11px] text-neutral-500 hover:text-neutral-800 font-medium mt-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Upload
+              </button>
+            </div>
+            <div>
+              <h3 id="profileCardName" class="text-base font-bold text-neutral-900">Basty Gonzales Amadeo</h3>
+              <span class="inline-block px-2.5 py-0.5 mt-1 bg-neutral-100 text-neutral-600 rounded-full text-xs font-medium">Enrolled Student</span>
+            </div>
+          </div>
+
+          <!-- Data fields -->
+          <div class="space-y-3">
+            <div class="bg-neutral-50/70 p-3.5 rounded-2xl border border-neutral-100">
+              <div class="text-[10px] tracking-wider uppercase font-semibold text-neutral-400 mb-1">Full Name</div>
+              <div id="profileDispFullName" class="text-sm font-medium text-neutral-800">Basty Gonzales Amadeo</div>
+            </div>
+
+            <div class="bg-neutral-50/70 p-3.5 rounded-2xl border border-neutral-100 flex items-center justify-between">
+              <div>
+                <div class="text-[10px] tracking-wider uppercase font-semibold text-neutral-400 mb-1">Email Address</div>
+                <div id="profileDispEmail" class="text-sm font-medium text-neutral-800 truncate max-w-[220px]">bastyamadeo@psu.edu.com</div>
+              </div>
+              <button onclick="copyToClipboard('bastyamadeo@psu.edu.com')" class="p-2 rounded-xl text-neutral-400 hover:text-neutral-700 hover:bg-neutral-200/50">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="bg-neutral-50/70 p-3.5 rounded-2xl border border-neutral-100 flex items-center justify-between">
+              <div>
+                <div class="text-[10px] tracking-wider uppercase font-semibold text-neutral-400 mb-1">Mobile Number</div>
+                <div id="profileDispMobile" class="text-sm font-medium text-neutral-800">+63 09659555022</div>
+              </div>
+              <button onclick="copyToClipboard('+63 09659555022')" class="p-2 rounded-xl text-neutral-400 hover:text-neutral-700 hover:bg-neutral-200/50">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="pt-6 space-y-4">
+        <button 
+          onclick="showSlide('edit')" 
+          class="w-full py-4 bg-white border border-neutral-200 text-neutral-900 font-semibold rounded-2xl shadow-sm hover:bg-neutral-50 flex items-center justify-center gap-2 transition-all text-sm"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+          </svg>
+          Edit Details
+        </button>
+
+        <button 
+          onclick="showSlide('login')" 
+          class="w-full py-2 text-neutral-500 font-medium hover:text-neutral-900 text-sm"
+        >
+          Log Out
+        </button>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: EDIT DETAILS SCREEN -->
+    <section id="slide-edit" class="slide p-6 flex-1 flex flex-col justify-between overflow-y-auto">
+      <div>
+        <!-- Top App Bar Navigation -->
+        <div class="flex items-center justify-between pt-2 pb-4">
+          <button onclick="showSlide('profile')" class="p-2 -ml-2 rounded-full hover:bg-neutral-200 transition-colors">
+            <svg class="w-5 h-5 text-neutral-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h2 class="text-base font-bold text-neutral-900">Edit Details</h2>
+          <div class="w-8 h-8 rounded-full bg-neutral-900 text-white flex items-center justify-center">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Student Summary Header -->
+        <div class="bg-white rounded-2xl p-4 border border-neutral-100 flex items-center gap-4 mb-5">
+          <div class="relative flex flex-col items-center">
+            <div class="w-14 h-14 rounded-full bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-400">
+              <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+            </div>
+            <div class="absolute bottom-4 right-0 w-5 h-5 bg-black text-white rounded-full flex items-center justify-center shadow-sm">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+              </svg>
+            </div>
+            <span class="text-[10px] text-neutral-500 font-medium mt-1">Upload Photo</span>
+          </div>
+
+          <div>
+            <h3 id="editHeaderName" class="text-sm font-bold text-neutral-900">Basty Gonzales Amadeo</h3>
+            <p class="text-xs text-neutral-500 font-mono">ID: STU-2026-8492</p>
+            <span class="inline-block px-2 py-0.5 mt-1 bg-neutral-100 text-neutral-600 rounded text-[11px] font-medium">Active Enrollment</span>
+          </div>
+        </div>
+
+        <!-- Editable Form -->
+        <form id="editForm" onsubmit="handleSaveChanges(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-neutral-800 mb-1.5">First Name</label>
+            <input 
+              type="text" 
+              id="editFirstName"
+              required 
+              value="Basty" 
+              class="w-full px-4 py-3 bg-white border border-neutral-200 rounded-2xl text-sm text-neutral-800 focus:outline-none focus:border-neutral-900"
+            >
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-1.5">
+              <label class="text-xs font-semibold text-neutral-800">Middle Name</label>
+              <span class="text-[11px] text-neutral-400">Optional</span>
+            </div>
+            <input 
+              type="text" 
+              id="editMiddleName"
+              value="Gonzales" 
+              class="w-full px-4 py-3 bg-white border border-neutral-200 rounded-2xl text-sm text-neutral-800 focus:outline-none focus:border-neutral-900"
+            >
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-neutral-800 mb-1.5">Last Name</label>
+            <input 
+              type="text" 
+              id="editLastName"
+              required 
+              value="Amadeo" 
+              class="w-full px-4 py-3 bg-white border border-neutral-200 rounded-2xl text-sm text-neutral-800 focus:outline-none focus:border-neutral-900"
+            >
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-neutral-800 mb-1.5">Email Address</label>
+            <div class="relative">
+              <input 
+                type="email" 
+                id="editEmail"
+                required 
+                value="bastyamadeo@psu.edu.com" 
+                class="w-full px-4 py-3 bg-white border border-neutral-200 rounded-2xl text-sm text-neutral-800 focus:outline-none focus:border-neutral-900 pr-10"
+              >
+              <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-500">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-neutral-800 mb-1.5">Mobile Number</label>
+            <input 
+              type="tel" 
+              id="editMobile"
+              required 
+              value="+63 09659555022" 
+              class="w-full px-4 py-3 bg-white border border-neutral-200 rounded-2xl text-sm text-neutral-800 focus:outline-none focus:border-neutral-900"
+            >
+          </div>
+
+          <div class="pt-4 space-y-2.5">
+            <button 
+              type="submit" 
+              class="w-full py-4 bg-neutral-950 text-white font-semibold rounded-2xl shadow-sm hover:bg-neutral-800 active:scale-[0.99] transition-all text-sm"
+            >
+              Save Changes
+            </button>
+            <button 
+              type="button" 
+              onclick="showSlide('profile')" 
+              class="w-full py-3.5 bg-neutral-100 text-neutral-700 font-semibold rounded-2xl hover:bg-neutral-200 transition-all text-sm"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Slide Navigation Controller
+    const slides = ['login', 'signup', 'profile', 'edit'];
+    const screenTitles = {
+      'login': 'Screen 1 of 4: Login',
+      'signup': 'Screen 2 of 4: Sign Up',
+      'profile': 'Screen 3 of 4: My Profile',
+      'edit': 'Screen 4 of 4: Edit Details'
+    };
+
+    function showSlide(slideName) {
+      slides.forEach(s => {
+        const el = document.getElementById(`slide-${s}`);
+        const btn = document.getElementById(`btn-${s}`);
+        if (s === slideName) {
+          el.classList.add('active');
+          btn.className = "py-1.5 px-2 rounded-lg bg-neutral-900 text-white transition-all text-center";
+        } else {
+          el.classList.remove('active');
+          btn.className = "py-1.5 px-2 rounded-lg bg-neutral-100 text-neutral-700 hover:bg-neutral-200 transition-all text-center";
+        }
+      });
+      document.getElementById('currentScreenLabel').innerText = screenTitles[slideName] || '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Interactive Demo Handlers
+    function handleLogin(e) {
+      e.preventDefault();
+      showSlide('profile');
+    }
+
+    function handleSignup(e) {
+      e.preventDefault();
+      const fn = document.getElementById('signupFirstName').value;
+      const mn = document.getElementById('signupMiddleName').value;
+      const ln = document.getElementById('signupLastName').value;
+      const email = document.getElementById('signupEmail').value;
+      const mobile = document.getElementById('signupMobile').value;
+
+      updateStudentData(fn, mn, ln, email, mobile);
+      showSlide('profile');
+    }
+
+    function handleSaveChanges(e) {
+      e.preventDefault();
+      const fn = document.getElementById('editFirstName').value;
+      const mn = document.getElementById('editMiddleName').value;
+      const ln = document.getElementById('editLastName').value;
+      const email = document.getElementById('editEmail').value;
+      const mobile = document.getElementById('editMobile').value;
+
+      updateStudentData(fn, mn, ln, email, mobile);
+      showSlide('profile');
+    }
+
+    function updateStudentData(fn, mn, ln, email, mobile) {
+      const full = [fn, mn, ln].filter(Boolean).join(' ');
+      document.getElementById('profileCardName').innerText = full;
+      document.getElementById('profileDispFullName').innerText = full;
+      document.getElementById('profileDispEmail').innerText = email;
+      document.getElementById('profileDispMobile').innerText = mobile;
+      document.getElementById('editHeaderName').innerText = full;
+    }
+
+    function togglePasswordVisibility(inputId) {
+      const input = document.getElementById(inputId);
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Copied to clipboard: ' + text);
+      }).catch(() => {
+        alert(text);
+      });
+    }
+  </script>
+</body>
+</html>
